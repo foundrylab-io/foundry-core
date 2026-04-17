@@ -1,0 +1,10 @@
+"use client";
+import { jsx as _jsx } from "react/jsx-runtime";
+import { Checkbox as CheckboxPrimitive } from "radix-ui";
+import { Check } from "lucide-react";
+import { cn } from "../lib/utils.js";
+function Checkbox({ className, ...props }) {
+    return (_jsx(CheckboxPrimitive.Root, { className: cn("peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground", className), ...props, children: _jsx(CheckboxPrimitive.Indicator, { className: cn("flex items-center justify-center text-current"), children: _jsx(Check, { className: "h-4 w-4" }) }) }));
+}
+export { Checkbox };
+//# sourceMappingURL=checkbox.js.map
