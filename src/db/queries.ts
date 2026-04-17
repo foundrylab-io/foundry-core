@@ -17,7 +17,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { eq } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type { users as UsersTable } from './schema/base.js';
+import type { users as UsersTable, User } from './schema/base.js';
 
 export interface CreateQueriesOptions<TSchema extends Record<string, unknown>> {
   /** Drizzle database client (from createDbClient). */
@@ -30,11 +30,17 @@ export interface Queries {
   /**
    * Ensure a `users` row exists for the given Clerk user ID.
    * Creates the row on first call (just-in-time provisioning).
-   * Returns the internal user record.
+   * Returns the internal user record, or undefined if provisioning failed.
+   *
+   * Typed as `User | undefined` (not `unknown`) so that generated code can
+   * use `user.id` after a null-check. With `unknown`, the null-check narrows
+   * to `{}` and any property access fails TypeScript compilation — this
+   * caused every StudioBook build to fail with "Property 'id' does not
+   * exist on type '{}'" for months.
    *
    * Throws if the current request is unauthenticated.
    */
-  ensureUserExists: (clerkId: string) => Promise<unknown>;
+  ensureUserExists: (clerkId: string) => Promise<User | undefined>;
 }
 
 export function createQueries<TSchema extends Record<string, unknown>>(
