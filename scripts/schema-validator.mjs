@@ -20,6 +20,39 @@ import { join, relative } from "path";
 const ROOT = process.cwd();
 const SCHEMA_PATH = join(ROOT, "lib/db/schema.ts");
 
+// Field names that are NEVER Drizzle columns — they're JS built-ins, Drizzle
+// internals, or shared property names. Matching `someVar.trim()` where
+// `someVar` happens to share a name with a table would otherwise produce a
+// false positive. The validator is a generic tool; it must not flag valid
+// JavaScript just because a variable collides with a table name.
+const SKIP_FIELDS = new Set([
+  // Drizzle internals
+  "$inferInsert", "$inferSelect", "_", "getSQL", "mapWith",
+  "findMany", "findFirst", "findUnique",
+  // JS String methods + properties
+  "trim", "trimStart", "trimEnd", "toLowerCase", "toUpperCase",
+  "charAt", "charCodeAt", "codePointAt", "concat", "includes",
+  "indexOf", "lastIndexOf", "match", "matchAll", "normalize",
+  "padEnd", "padStart", "repeat", "replace", "replaceAll",
+  "search", "slice", "split", "startsWith", "endsWith",
+  "substring", "substr", "at", "localeCompare",
+  // JS Array methods
+  "push", "pop", "shift", "unshift", "map", "filter", "reduce",
+  "reduceRight", "forEach", "find", "findIndex", "findLast",
+  "findLastIndex", "some", "every", "flat", "flatMap",
+  "join", "sort", "reverse", "copyWithin", "fill", "entries",
+  "from", "of", "isArray",
+  // JS shared / Object / Promise
+  "length", "size", "constructor", "prototype", "hasOwnProperty",
+  "isPrototypeOf", "propertyIsEnumerable", "toLocaleString",
+  "toString", "valueOf", "name", "keys", "values", "then",
+  "catch", "finally",
+  // JSON / Date / Number common methods that might appear on dotted access
+  "toFixed", "toPrecision", "toExponential", "toISOString",
+  "toJSON", "getTime", "getFullYear", "getMonth", "getDate",
+  "getHours", "getMinutes", "getSeconds",
+]);
+
 // ── Parse schema.ts ──────────────────────────────────────────────────────────
 
 function parseSchema(schemaContent) {
@@ -122,24 +155,9 @@ function checkFile(filePath, content, tables) {
     let accessMatch;
     while ((accessMatch = accessRegex.exec(content)) !== null) {
       const fieldName = accessMatch[1];
-      // Skip Drizzle method calls and common properties
-      const skipProps = new Set([
-        "$inferInsert",
-        "$inferSelect",
-        "_",
-        "getSQL",
-        "mapWith",
-      ]);
-      if (skipProps.has(fieldName)) continue;
 
-      // Skip if it looks like a method call on the table itself (not a column)
-      // e.g. db.select().from(tableName) — "from" is not a column
-      const drizzleMethods = new Set([
-        "findMany",
-        "findFirst",
-        "findUnique",
-      ]);
-      if (drizzleMethods.has(fieldName)) continue;
+      // Skip Drizzle internals and JS built-in method/property names.
+      if (SKIP_FIELDS.has(fieldName)) continue;
 
       if (!fields.has(fieldName)) {
         const lineNum =
