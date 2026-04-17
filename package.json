@@ -1,0 +1,76 @@
+{
+  "name": "@foundrylab/core",
+  "version": "0.1.0",
+  "description": "Shared infrastructure for Foundry-generated SaaS apps: auth, database, UI primitives, and CI tooling.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./db": {
+      "types": "./dist/db/index.d.ts",
+      "import": "./dist/db/index.js"
+    },
+    "./db/schema": {
+      "types": "./dist/db/schema/index.d.ts",
+      "import": "./dist/db/schema/index.js"
+    },
+    "./db/queries": {
+      "types": "./dist/db/queries.d.ts",
+      "import": "./dist/db/queries.js"
+    },
+    "./auth/middleware": {
+      "types": "./dist/auth/middleware.d.ts",
+      "import": "./dist/auth/middleware.js"
+    },
+    "./ui/*": {
+      "types": "./dist/ui/*.d.ts",
+      "import": "./dist/ui/*.js"
+    }
+  },
+  "bin": {
+    "foundry-migrate": "./scripts/migrate.mjs",
+    "foundry-schema-check": "./scripts/schema-validator.mjs",
+    "foundry-integration-smoke": "./scripts/integration-smoke.mjs"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "@clerk/nextjs": "^7.0.0",
+    "drizzle-orm": "^0.43.0",
+    "lucide-react": "^0.511.0",
+    "next": "^15.0.0",
+    "postgres": "^3.4.0",
+    "radix-ui": "^1.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foundrylab-io/foundry-core.git"
+  },
+  "license": "MIT"
+}
