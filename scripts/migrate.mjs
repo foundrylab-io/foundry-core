@@ -16,9 +16,12 @@ import postgres from 'postgres';
 import { readFileSync, readdirSync, statSync } from 'fs';
 import { join, resolve } from 'path';
 
-const url = process.env.POSTGRES_URL;
+// Accept POSTGRES_URL (Railway convention) OR DATABASE_URL (Foundry Sandbox
+// convention). Railway deployments ship POSTGRES_URL; the Sandbox ships
+// DATABASE_URL. foundry-migrate runs in both, so it reads whichever exists.
+const url = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 if (!url) {
-  console.error('foundry-migrate: POSTGRES_URL not set');
+  console.error('foundry-migrate: neither POSTGRES_URL nor DATABASE_URL is set');
   process.exit(1);
 }
 

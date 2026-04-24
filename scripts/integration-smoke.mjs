@@ -23,7 +23,9 @@ import pg from "postgres";
 const ROOT = process.cwd();
 const PORT = process.env.PORT || "3000";
 const BASE_URL = `http://localhost:${PORT}`;
-const POSTGRES_URL = process.env.POSTGRES_URL;
+// Accept POSTGRES_URL (Railway) or DATABASE_URL (Sandbox). See migrate.mjs
+// for the same dual-lookup — foundry-integration-smoke runs in both envs.
+const POSTGRES_URL = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
 // ── Route Discovery ──────────────────────────────────────────────────────────
 
