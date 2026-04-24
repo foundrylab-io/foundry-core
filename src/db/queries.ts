@@ -14,10 +14,16 @@
  * while still providing the standard auth helpers.
  */
 
-import { auth, currentUser } from '@clerk/nextjs/server';
 import { eq } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { auth, currentUser } from '../auth/index.js';
 import type { users as UsersTable, User } from './schema/base.js';
+
+// auth/currentUser are imported from @foundrylab/core's own auth wrapper,
+// not from @clerk/nextjs/server directly. This routes through the
+// FOUNDRY_TEST_MODE bypass so the Sandbox can exercise these helpers
+// without a Clerk session. In production both wrappers delegate to
+// the real Clerk calls, so behaviour is unchanged.
 
 export interface CreateQueriesOptions<TSchema extends Record<string, unknown>> {
   /** Drizzle database client (from createDbClient). */

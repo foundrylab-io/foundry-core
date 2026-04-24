@@ -19,7 +19,7 @@
  * FOUNDRY_TEST_MODE MUST NEVER be set in production. Railway deployments
  * of founder apps do not set this variable; only the Sandbox runner does.
  */
-import { auth as clerkAuth } from '@clerk/nextjs/server';
+import { auth as clerkAuth, currentUser as clerkCurrentUser } from '@clerk/nextjs/server';
 /**
  * Returns the current request's auth state.
  *
@@ -29,4 +29,17 @@ import { auth as clerkAuth } from '@clerk/nextjs/server';
  * fields are absent — generated code should only read `userId`.
  */
 export declare function auth(): Promise<Awaited<ReturnType<typeof clerkAuth>>>;
+/**
+ * Returns the current Clerk user record (name, email, etc.) or null.
+ *
+ * In test mode (`FOUNDRY_TEST_MODE=true`): returns null instead of hitting
+ * Clerk. Callers that use this to populate a new local users row should
+ * handle null by using empty-string defaults — `ensureUserExists` in
+ * `@foundrylab/core/db/queries` already does so.
+ *
+ * Exposed so that core's own helpers (ensureUserExists) can delegate
+ * through the same test-mode gate without each helper having to check
+ * FOUNDRY_TEST_MODE directly.
+ */
+export declare function currentUser(): Promise<Awaited<ReturnType<typeof clerkCurrentUser>>>;
 //# sourceMappingURL=index.d.ts.map

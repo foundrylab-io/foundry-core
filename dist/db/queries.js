@@ -13,8 +13,8 @@
  * The factory pattern keeps the package decoupled from the founder's schema
  * while still providing the standard auth helpers.
  */
-import { auth, currentUser } from '@clerk/nextjs/server';
 import { eq } from 'drizzle-orm';
+import { auth, currentUser } from '../auth/index.js';
 export function createQueries(options) {
     const { db, users } = options;
     async function ensureUserExists(clerkId) {

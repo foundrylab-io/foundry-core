@@ -1,6 +1,6 @@
 {
   "name": "@foundrylab/core",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Shared infrastructure for Foundry-generated SaaS apps: auth, database, UI primitives, and CI tooling.",
   "type": "module",
   "main": "./dist/index.js",
