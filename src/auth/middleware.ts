@@ -57,6 +57,15 @@ export function createMiddleware(options: CreateMiddlewareOptions = {}) {
   const isPublicRoute = createRouteMatcher(publicRoutes);
 
   return clerkMiddleware(async (auth, request) => {
+    // Test-mode bypass: Sandbox runners set FOUNDRY_TEST_MODE=true so that
+    // HTTP smoke tests can hit protected routes without provisioning Clerk
+    // sessions. Generated code consumes `auth()` from @foundrylab/core/auth,
+    // which returns a synthetic { userId } in this mode. Railway production
+    // deployments never set this variable. See src/auth/index.ts.
+    if (process.env.FOUNDRY_TEST_MODE === 'true') {
+      return;
+    }
+
     const { userId } = await auth();
 
     if (request.nextUrl.pathname === '/') {

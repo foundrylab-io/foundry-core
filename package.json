@@ -1,6 +1,6 @@
 {
   "name": "@foundrylab/core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Shared infrastructure for Foundry-generated SaaS apps: auth, database, UI primitives, and CI tooling.",
   "type": "module",
   "main": "./dist/index.js",
@@ -25,6 +25,10 @@
     "./auth/middleware": {
       "types": "./dist/auth/middleware.d.ts",
       "import": "./dist/auth/middleware.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
     },
     "./ui/*": {
       "types": "./dist/ui/*.d.ts",

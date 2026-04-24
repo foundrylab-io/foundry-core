@@ -11,5 +11,6 @@
  */
 export { createDbClient, createQueries } from './db/index.js';
 export { createMiddleware, defaultMatcherConfig } from './auth/middleware.js';
+export { auth } from './auth/index.js';
 export { cn } from './lib/utils.js';
 //# sourceMappingURL=index.js.map
