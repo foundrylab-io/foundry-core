@@ -19,7 +19,7 @@
  * FOUNDRY_TEST_MODE MUST NEVER be set in production. Railway deployments
  * of founder apps do not set this variable; only the Sandbox runner does.
  */
-import { auth as clerkAuth, currentUser as clerkCurrentUser } from '@clerk/nextjs/server';
+import type { auth as clerkAuth, currentUser as clerkCurrentUser } from '@clerk/nextjs/server';
 /**
  * Returns the current request's auth state.
  *

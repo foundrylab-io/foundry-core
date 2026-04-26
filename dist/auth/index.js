@@ -19,7 +19,6 @@
  * FOUNDRY_TEST_MODE MUST NEVER be set in production. Railway deployments
  * of founder apps do not set this variable; only the Sandbox runner does.
  */
-import { auth as clerkAuth, currentUser as clerkCurrentUser, } from '@clerk/nextjs/server';
 /**
  * Returns the current request's auth state.
  *
@@ -39,7 +38,8 @@ export async function auth() {
         // requests and will surface as a test failure naturally.
         return { userId };
     }
-    return clerkAuth();
+    const { auth: realClerkAuth } = await import('@clerk/nextjs/server');
+    return realClerkAuth();
 }
 /**
  * Returns the current Clerk user record (name, email, etc.) or null.
@@ -57,6 +57,7 @@ export async function currentUser() {
     if (process.env.FOUNDRY_TEST_MODE === 'true') {
         return null;
     }
-    return clerkCurrentUser();
+    const { currentUser: realClerkCurrentUser } = await import('@clerk/nextjs/server');
+    return realClerkCurrentUser();
 }
 //# sourceMappingURL=index.js.map

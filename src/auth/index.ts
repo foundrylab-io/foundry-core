@@ -20,7 +20,12 @@
  * of founder apps do not set this variable; only the Sandbox runner does.
  */
 
-import {
+// Type-only import — erased at compile time, so the test-mode path never
+// triggers Node's resolution of `@clerk/nextjs/server`. Value imports below
+// are dynamic and gated by FOUNDRY_TEST_MODE for the same reason: Clerk's
+// server submodule depends on Next.js bundler internals (e.g. `routeMatcher`)
+// that plain Node — and therefore the Sandbox's vitest runs — cannot resolve.
+import type {
   auth as clerkAuth,
   currentUser as clerkCurrentUser,
 } from '@clerk/nextjs/server';
@@ -44,7 +49,8 @@ export async function auth(): Promise<Awaited<ReturnType<typeof clerkAuth>>> {
     // requests and will surface as a test failure naturally.
     return { userId } as Awaited<ReturnType<typeof clerkAuth>>;
   }
-  return clerkAuth();
+  const { auth: realClerkAuth } = await import('@clerk/nextjs/server');
+  return realClerkAuth();
 }
 
 /**
@@ -65,5 +71,8 @@ export async function currentUser(): Promise<
   if (process.env.FOUNDRY_TEST_MODE === 'true') {
     return null;
   }
-  return clerkCurrentUser();
+  const { currentUser: realClerkCurrentUser } = await import(
+    '@clerk/nextjs/server'
+  );
+  return realClerkCurrentUser();
 }
